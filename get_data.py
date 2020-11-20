@@ -64,3 +64,56 @@ def get_ncdc_data():
     #join States coordinate for map plot
 
     return data
+
+
+    
+
+## load data function
+@st.cache ## caches the output of the function
+def get_data():
+    '''
+    Fuction adds all the needed data to a list to be easily
+    accessed by indexing
+
+    0 = states_csv,
+    1 = dailyupdates
+    2 = states_Daily
+    3 = states_daily death
+    4 = states_daily_recovery
+    5 = who
+    '''
+    # empty array
+    data = []
+
+    ## 0 - ncdc-covid19-states.csv
+    states_csv = get_ncdc_data()
+    states_csv.columns = ['STATE', 'CONFIRMED','ACTIVE','DISCHARGED', 'DEATHS' ]
+    data.append(states_csv)
+
+    ## 1 - ncdc-covid19-dailyupdates.csv
+    dailyupdates_csv = pd.read_csv(GEN_UPDATE)
+    data.append(dailyupdates_csv)
+    
+
+    ## 2 - ncdc-covid19-states-daily-cases.csv
+    states_daily_cases_csv = pd.read_csv(STATES_DAILY_CASES_URL)
+    data.append(states_daily_cases_csv)
+
+    ## 3 - ncdc-covid19-states-daily-deaths.csv
+    states_daily_deaths_csv = pd.read_csv(STATES_DAILY_DEATHS_URL)
+    data.append(states_daily_deaths_csv)
+
+    ## 4 - ncdc-covid19-states-daily-recovered.csv
+    states_daily_recovered_csv = pd.read_csv(STATES_DAILY_RECOVERED)
+    data.append(states_daily_recovered_csv)
+    
+    ##5 - 'WHO-COVID-19-global-data.csv'
+    who = pd.read_csv(WHO_URL)[['Date_reported', 'Country', 'New_cases', 'Cumulative_cases', 
+                                'New_deaths', 'Cumulative_deaths']]
+    who_daily = who.loc[who['Country'] == 'Nigeria'].reset_index(drop = True)
+    who_daily.columns = ['Date_reported', 'Country', 'New_cases', 'Cumulative_cases',
+                   'New_deaths', 'Cumulative_deaths']
+    data.append(who_daily)
+    
+    
+    return data

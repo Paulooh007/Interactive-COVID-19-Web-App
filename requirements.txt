@@ -7,3 +7,6 @@ numpy==1.18.1
 folium==0.11.0
 streamlit==0.64.0
 streamlit-folium==0.0.1
+plotly==4.9.0
+bs4==4.9.3
+PIL==7.2.0

@@ -2,7 +2,7 @@
 An Interactive web app using real time data from [NCDC](https://covid19.ncdc.gov.ng/) and [WHO](https://covid19.who.int/WHO-COVID-19-global-table-data.csv) to show the current COVID-19 situation of Nigeria with maps and trend plots.
 
 ## App Demo
-[View app here](https://nigeria-covid-data-explorer.herokuapp.com/)
+View app [here](https://nigeria-covid-data-explorer.herokuapp.com/)
 ![App demo](demo/demo.gif)
 
 ## Data Sources

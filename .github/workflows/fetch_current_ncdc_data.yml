@@ -1,9 +1,9 @@
 name: Fetch weekly NCDC Data
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '0 0 * * 1' # Run at midnight every Monday
+
 
   workflow_dispatch:     # Allows manual trigger
 

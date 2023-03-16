@@ -80,3 +80,7 @@ def get_data():
     
     
     return data
+
+
+if __name__ == "__main__":
+    data = get_data()

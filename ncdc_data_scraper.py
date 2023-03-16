@@ -7,7 +7,14 @@ import os
 
 CWD = os.path.dirname(os.path.abspath(__file__))
 
-def get_ncdc_data():
+STATES_DAILY_CASES_URL = 'https://github.com/Kamparia/nigeria-covid19-data/raw/master/data/csv/ncdc-covid19-states-daily-cases.csv'
+STATES_DAILY_DEATHS_URL = 'https://raw.githubusercontent.com/Kamparia/nigeria-covid19-data/master/data/csv/ncdc-covid19-states-daily-deaths.csv'
+STATES_DAILY_RECOVERED = 'https://raw.githubusercontent.com/Kamparia/nigeria-covid19-data/master/data/csv/ncdc-covid19-states-daily-recovered.csv'
+COORD_ULR = 'https://github.com/Kamparia/nigeria-covid19-data/raw/master/data/csv/ncdc-covid19-states.csv'
+GEN_UPDATE = 'https://github.com/Kamparia/nigeria-covid19-data/raw/master/data/csv/ncdc-covid19-dailyupdates.csv'
+WHO_URL ="https://covid19.who.int/WHO-COVID-19-global-data.csv"
+
+def scrape_ncdc_data():
     """
     This function extracts data from the NCDC website and stores it as a pandas dataframe' 
     """
@@ -57,5 +64,62 @@ def get_ncdc_data():
 
     return data
 
+def get_data():
+    '''
+    Fuction adds all the needed data to a list to be easily
+    accessed by indexing
+
+    0 = states_csv,
+    1 = dailyupdates
+    2 = states_Daily
+    3 = states_daily death
+    4 = states_daily_recovery
+    5 = who
+    '''
+    # empty array
+    data = []
+
+    # 0 - ncdc-covid19-states.csv   Site has been taken down
+    # states_csv = scrape_ncdc_data()
+    # states_csv.columns = ['STATE', 'CONFIRMED','ACTIVE','DISCHARGED', 'DEATHS' ]
+    # data.append(states_csv)
+
+    ## 1 - ncdc-covid19-dailyupdates.csv
+    dailyupdates_csv = pd.read_csv(GEN_UPDATE)
+    data.append(dailyupdates_csv)
+    
+
+    ## 2 - ncdc-covid19-states-daily-cases.csv
+    states_daily_cases_csv = pd.read_csv(STATES_DAILY_CASES_URL)
+    data.append(states_daily_cases_csv)
+
+    ## 3 - ncdc-covid19-states-daily-deaths.csv
+    states_daily_deaths_csv = pd.read_csv(STATES_DAILY_DEATHS_URL)
+    data.append(states_daily_deaths_csv)
+
+    ## 4 - ncdc-covid19-states-daily-recovered.csv
+    states_daily_recovered_csv = pd.read_csv(STATES_DAILY_RECOVERED)
+    data.append(states_daily_recovered_csv)
+    
+    ##5 - 'WHO-COVID-19-global-data.csv'
+    who = pd.read_csv(WHO_URL)[['Date_reported', 'Country', 'New_cases', 'Cumulative_cases', 
+                                'New_deaths', 'Cumulative_deaths']]
+    who_daily = who.loc[who['Country'] == 'Nigeria'].reset_index(drop = True)
+    who_daily.columns = ['Date_reported', 'Country', 'New_cases', 'Cumulative_cases',
+                    'New_deaths', 'Cumulative_deaths']
+    data.append(who_daily)
+    
+    
+    return data
+
+def store_data():
+    data = get_data()
+
+    data[0].to_csv(os.path.join(CWD, "data_latest/daily_update_latest.csv"), index = False)
+    data[1].to_csv(os.path.join(CWD, "data_latest/states_daily_latest.csv"), index = False)
+    data[2].to_csv(os.path.join(CWD, "data_latest/states_daily_death_latest.csv"), index = False)
+    data[3].to_csv(os.path.join(CWD, "data_latest/states_daily_recovery_latest.csv"), index = False)
+
 if __name__ == "__main__":
-    get_ncdc_data()
+    get_data()
+    store_data()
